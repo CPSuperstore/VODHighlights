@@ -9,4 +9,4 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
-editor.edit_video(sys.argv[1], sys.argv[2], volume_threshold=0.50, section_length=20)
+editor.edit_video(sys.argv[1], sys.argv[2], volume_threshold=0.01, section_length=25 * 60)

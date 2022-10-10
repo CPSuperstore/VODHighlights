@@ -92,3 +92,5 @@ def edit_video(
         logging.info("Cleaning up temporary backup files...")
         os.remove(backup_file)
         os.remove(filename)
+
+    logging.info("Edit completed. Took {}".format(utils.display_time(time.time() - start)))
