@@ -25,7 +25,7 @@ if not os.path.isdir(BACKUP_DIR):
 def edit_video(
         input_path: str, output_path: str, window_size: float = 0.1, volume_threshold: float = 0.01,
         sound_pad: float = 0.25, section_length: float = None
-):
+) -> float:
     start = time.time()
 
     logging.info("Reading file '{}' into memory...".format(input_path))
@@ -94,3 +94,5 @@ def edit_video(
         os.remove(filename)
 
     logging.info("Edit completed. Took {}".format(utils.display_time(time.time() - start)))
+
+    return time.time() - start
