@@ -29,39 +29,57 @@ DEFAULTS_FILE = "defaults.json"
 
 
 def get_layout() -> list:
+    label_width = 25
+    slider_width = 35
+    slider_height = 20
+
     return [
-        [sg.Text("Stream Highlight Creator")],
+        [sg.Text("Stream Highlight Creator", justification='center')],
         [
-            sg.Text("Input File"), sg.Input(key="input_path", default_text=INPUT_PATH),
+            sg.Text("Input File", size=(label_width, None), justification='right'),
+            sg.Input(key="input_path", default_text=INPUT_PATH),
             sg.FileBrowse(button_text="Browse...", file_types=FILE_TYPES)
         ],
         [
-            sg.Text("Output Directory"), sg.Input(key="output_path", default_text=OUTPUT_PATH),
-            sg.FolderBrowse(button_text="Save As...")
+            sg.Text("Output Directory", size=(label_width, None), justification='right'),
+            sg.Input(key="output_path", default_text=OUTPUT_PATH),
+            sg.FolderBrowse(button_text="Browse...")
         ],
         [
-            sg.Text("Video Segment Length (Minutes)"),
+            sg.Text("Video Segment Length (Minutes)", size=(label_width, None), justification='right'),
             sg.Input(key="segment_length", default_text=SEGMENT_LENGTH),
         ],
         # [
-        #     sg.Text("Name Prefix"), sg.Input(key="name_prefix", default_text=VIDEO_PREFIX),
+        #     sg.Text("Name Prefix", size=(label_width, None), justification='right'),
+        #     sg.Input(key="name_prefix", default_text=VIDEO_PREFIX),
         #     sg.FolderBrowse(button_text="Save As...")
         # ],
         [
-            sg.Text("Output Format"),
-            sg.Combo(VIDEO_FORMATS, readonly=True, default_value=FILE_TYPE, key="file_format")
+            sg.Text("Output Format", size=(label_width, None), justification='right'),
+            sg.Combo(
+                VIDEO_FORMATS, readonly=True, default_value=FILE_TYPE, key="file_format", size=(slider_width + 8, None)
+            )
         ],
         [
-            sg.Text("Sound Pad"),
-            sg.Slider((0, 1), default_value=SOUND_PAD, resolution=0.05, orientation="h", key="sound_pad")
+            sg.Text("Sound Pad", size=(label_width, None), justification='right'),
+            sg.Slider(
+                (0, 1), default_value=SOUND_PAD, resolution=0.05, orientation="h", key="sound_pad",
+                size=(slider_width, slider_height)
+            )
         ],
         [
-            sg.Text("Window Size"),
-            sg.Slider((0.1, 5), default_value=WINDOW_SIZE, resolution=0.1, orientation="h", key="window_size")
+            sg.Text("Window Size", size=(label_width, None), justification='right'),
+            sg.Slider(
+                (0.1, 5), default_value=WINDOW_SIZE, resolution=0.1, orientation="h", key="window_size",
+                size=(slider_width, slider_height)
+            )
         ],
         [
-            sg.Text("Volume Threshold"),
-            sg.Slider((0, 100), default_value=VOLUME_THRESHOLD, resolution=1, orientation="h", key="volume_threshold")
+            sg.Text("Volume Threshold", size=(label_width, None), justification='right'),
+            sg.Slider(
+                (0, 100), default_value=VOLUME_THRESHOLD, resolution=1, orientation="h", key="volume_threshold",
+                size=(slider_width, slider_height)
+            )
         ],
         [sg.Button("Start")]
     ]
@@ -80,9 +98,6 @@ def show_gui():
     try:
         with open(DEFAULTS_FILE, 'r') as f:
             defaults = json.loads(f.read())
-
-            print(defaults)
-            print(DEFAULTS_FILE)
 
             INPUT_PATH = defaults.get("input_path", INPUT_PATH)
             OUTPUT_PATH = defaults.get("output_path", OUTPUT_PATH)
