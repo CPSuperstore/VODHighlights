@@ -2,6 +2,11 @@ import os
 import sys
 import logging
 
+try:
+    import pyi_splash
+except ImportError:
+    pyi_splash = None
+
 import source.ui as ui
 import source.editor as editor
 
@@ -10,6 +15,9 @@ logging.basicConfig(
     format="(%(asctime)s) <%(threadName)-10.10s> [%(levelname)-7.7s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S"
 )
+
+if pyi_splash is not None:
+    pyi_splash.close()
 
 if len(sys.argv) == 1:
     options = ui.show_gui()
