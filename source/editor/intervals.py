@@ -1,11 +1,9 @@
 import math
-import os.path
-import time
 import typing
-import json
-import source.typehints as typehints
 
 import moviepy.editor as mp
+
+import source.typehints as typehints
 
 
 def get_intervals_over_threshold(
@@ -71,7 +69,11 @@ def split_up_intervals(
         final_section_length = sum(s[1] - s[0] for s in interval_buffer)
 
         if final_section_length / section_length < min_length_percent:
-            final_edit[-1].extend(interval_buffer)
+            try:
+                final_edit[-1].extend(interval_buffer)
+
+            except IndexError:
+                final_edit.append(interval_buffer)
 
         else:
             final_edit.append(interval_buffer)

@@ -21,7 +21,7 @@ OUTPUT_PATH = ""
 VIDEO_PREFIX = "Part_"
 FILE_TYPE = ".mp4"
 WINDOW_SIZE = 0.1
-VOLUME_THRESHOLD = 1
+VOLUME_THRESHOLD = 0.01
 SOUND_PAD = 0.25
 SEGMENT_LENGTH = "25"
 
@@ -106,7 +106,7 @@ def show_gui():
             SEGMENT_LENGTH = defaults.get("segment_length", SEGMENT_LENGTH)
             FILE_TYPE = defaults.get("file_format", FILE_TYPE)
             WINDOW_SIZE = defaults.get("window_size", WINDOW_SIZE)
-            VOLUME_THRESHOLD = defaults.get("volume_threshold", VOLUME_THRESHOLD)
+            VOLUME_THRESHOLD = defaults.get("volume_threshold", VOLUME_THRESHOLD) * 100
             SOUND_PAD = defaults.get("sound_pad", SOUND_PAD)
 
     except (FileNotFoundError, json.JSONDecodeError):

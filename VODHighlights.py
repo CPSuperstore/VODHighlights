@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import traceback
 
 try:
     import pyi_splash
@@ -37,6 +38,7 @@ if len(sys.argv) == 1:
         ui.show_completed(options["output_path"], duration)
 
     except Exception:
+        traceback.print_exc()
         ui.show_completed(options["output_path"], None)
 
 else:
