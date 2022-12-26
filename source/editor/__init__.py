@@ -72,28 +72,28 @@ def edit_video(
     edited_video = mp.concatenate_videoclips(keep_clips)
     logging.info("Full edited duration is {}".format(utils.display_time(edited_video.duration)))
 
-    filename = output_path if section_length is None else "{}_TMP.mp4".format(output_path)
-
-    logging.info("Writing new video to '{}'... This will take a long time.".format(filename))
-    edited_video.write_videofile(
-        filename,
-        fps=video.fps,
-        preset='ultrafast',
-        codec='libx264',
-        temp_audiofile=os.path.join(TEMP_DIR, '{}.m4a'.format(time.time())),
-        remove_temp=True,
-        audio_codec="aac",
-        threads=6,
-        verbose=False,
-        # logger=None
-    )
+    # filename = output_path if section_length is None else "{}_TMP.mp4".format(output_path)
+    #
+    # logging.info("Writing new video to '{}'... This will take a long time.".format(filename))
+    # edited_video.write_videofile(
+    #     filename,
+    #     fps=video.fps,
+    #     preset='ultrafast',
+    #     codec='libx264',
+    #     temp_audiofile=os.path.join(TEMP_DIR, '{}.m4a'.format(time.time())),
+    #     remove_temp=True,
+    #     audio_codec="aac",
+    #     threads=6,
+    #     verbose=False,
+    #     # logger=None
+    # )
 
     if section_length is not None:
         backup_editor.backup_edit(edited_video, backup_file, output_path)
 
         logging.info("Cleaning up temporary backup files...")
         os.remove(backup_file)
-        os.remove(filename)
+        # os.remove(filename)
 
     logging.info("Edit completed. Took {}".format(utils.display_time(time.time() - start)))
 
