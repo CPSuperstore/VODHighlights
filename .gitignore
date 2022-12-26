@@ -134,3 +134,6 @@ length_backups
 
 *.m4a
 defaults.json
+models/
+sample_videos/
+*.mp4

@@ -48,7 +48,7 @@ def approximate_length(intervals: typehints.INTERVAL_TYPE) -> float:
 
 
 def split_up_intervals(
-        intervals: typehints.INTERVAL_TYPE, section_length: float = None
+        intervals: typehints.INTERVAL_TYPE, section_length: float = None, min_length_percent: float = 0.25
 ) -> typing.List[float]:
 
     lengths = [i[1] - i[0] for i in intervals]
@@ -68,7 +68,13 @@ def split_up_intervals(
             time_buffer = 0
 
     if len(interval_buffer) > 0:
-        final_edit.append(interval_buffer)
+        final_section_length = sum(s[1] - s[0] for s in interval_buffer)
+
+        if final_section_length / section_length < min_length_percent:
+            final_edit[-1].extend(interval_buffer)
+
+        else:
+            final_edit.append(interval_buffer)
 
     lengths = []
     for section in final_edit:
