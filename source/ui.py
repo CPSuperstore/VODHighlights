@@ -1,15 +1,11 @@
 import datetime
 import json
-
-import PySimpleGUI as sg
-import os
 import sys
 
-WINDOW_SETTINGS = {
-    "title": "Stream Highlight Creator",
-    "finalize": True,
-    "icon": "assets/logo.ico" if os.name == 'nt' else "assets/logo.png"
-}
+import PySimpleGUI as sg
+
+import source.update_checker as update_checker
+import source.ui_defaults as ui_defaults
 
 sg.change_look_and_feel('Dark2')
 
@@ -122,7 +118,10 @@ def show_gui():
     except (FileNotFoundError, json.JSONDecodeError):
         pass
 
-    window = sg.Window(layout=get_layout(), **WINDOW_SETTINGS)
+    window = sg.Window(layout=get_layout(), **ui_defaults.WINDOW_SETTINGS)
+    state = update_checker.is_update_pending()
+    if state is not False:
+        update_checker.show(state)
 
     while True:
         event, values = window.read()
@@ -175,7 +174,7 @@ def show_gui():
 
 
 def show_completed(output_path: str, duration: float):
-    settings = WINDOW_SETTINGS.copy()
+    settings = ui_defaults.WINDOW_SETTINGS.copy()
     del settings["finalize"]
 
     if duration is None:
@@ -197,7 +196,7 @@ def show_completed(output_path: str, duration: float):
 
 
 def validation_error(message: str):
-    settings = WINDOW_SETTINGS.copy()
+    settings = ui_defaults.WINDOW_SETTINGS.copy()
     del settings["finalize"]
 
     sg.popup(
@@ -206,7 +205,7 @@ def validation_error(message: str):
 
 
 def show_error(file_path: str):
-    settings = WINDOW_SETTINGS.copy()
+    settings = ui_defaults.WINDOW_SETTINGS.copy()
     del settings["finalize"]
 
     sg.popup(
