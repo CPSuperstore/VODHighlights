@@ -24,7 +24,7 @@ if not os.path.isdir(BACKUP_DIR):
 
 def edit_video(
         input_path: str, output_path: str, window_size: float = 0.1, volume_threshold: float = 0.01,
-        sound_pad: float = 0.25, section_length: float = None
+        sound_pad: float = 0.25, section_length: float = None, min_length_percent: float = 0.25
 ) -> float:
     start = time.time()
 
@@ -50,7 +50,9 @@ def edit_video(
 
     else:
         logging.info("Breaking video into sections of length {}".format(utils.display_time(section_length)))
-        broken_down_intervals = intervals.split_up_intervals(interval, section_length)
+        broken_down_intervals = intervals.split_up_intervals(
+            interval, section_length, min_length_percent=min_length_percent
+        )
 
         for i, length in enumerate(broken_down_intervals):
             logging.info("    Section {} - {}".format(i + 1, utils.display_time(length)))

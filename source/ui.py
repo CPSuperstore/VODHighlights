@@ -24,6 +24,7 @@ WINDOW_SIZE = 0.1
 VOLUME_THRESHOLD = 0.01
 SOUND_PAD = 0.25
 SEGMENT_LENGTH = "25"
+MIN_LENGTH_PERCENT = 0.25
 
 DEFAULTS_FILE = "defaults.json"
 
@@ -48,6 +49,13 @@ def get_layout() -> list:
         [
             sg.Text("Video Segment Length (Minutes)", size=(label_width, None), justification='right'),
             sg.Input(key="segment_length", default_text=SEGMENT_LENGTH),
+        ],
+        [
+            sg.Text("Min Length Percent", size=(label_width, None), justification='right'),
+            sg.Slider(
+                (0, 100), default_value=MIN_LENGTH_PERCENT, resolution=1, orientation="h", key="min_length_percent",
+                size=(slider_width, slider_height)
+            )
         ],
         # [
         #     sg.Text("Name Prefix", size=(label_width, None), justification='right'),
@@ -94,6 +102,7 @@ def show_gui():
     global VIDEO_PREFIX
     global FILE_TYPE
     global SEGMENT_LENGTH
+    global MIN_LENGTH_PERCENT
 
     try:
         with open(DEFAULTS_FILE, 'r') as f:
@@ -108,6 +117,7 @@ def show_gui():
             WINDOW_SIZE = defaults.get("window_size", WINDOW_SIZE)
             VOLUME_THRESHOLD = defaults.get("volume_threshold", VOLUME_THRESHOLD) * 100
             SOUND_PAD = defaults.get("sound_pad", SOUND_PAD)
+            MIN_LENGTH_PERCENT = defaults.get("min_length_percent", MIN_LENGTH_PERCENT) * 100
 
     except (FileNotFoundError, json.JSONDecodeError):
         pass
@@ -154,7 +164,8 @@ def show_gui():
                     file_format=values["file_format"],
                     volume_threshold=values["volume_threshold"] / 100,
                     sound_pad=values["sound_pad"],
-                    segment_length=values["segment_length"]
+                    segment_length=values["segment_length"],
+                    min_length_percent=values["min_length_percent"] / 100
                 )
 
                 with open(DEFAULTS_FILE, 'w') as f:
