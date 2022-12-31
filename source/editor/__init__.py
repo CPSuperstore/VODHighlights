@@ -24,7 +24,8 @@ if not os.path.isdir(BACKUP_DIR):
 
 def edit_video(
         input_path: str, output_path: str, window_size: float = 0.1, volume_threshold: float = 0.01,
-        sound_pad: float = 0.25, section_length: float = None, min_length_percent: float = 0.25
+        sound_pad: float = 0.25, section_length: float = None, min_length_percent: float = 0.25,
+        suffix_path: str = None, suffix_last_part: str = None
 ) -> float:
     start = time.time()
 
@@ -90,7 +91,8 @@ def edit_video(
 
     if section_length is not None:
         backup_editor.backup_edit(
-            edited_video, backup_file, output_path
+            edited_video, backup_file, output_path,
+            suffix_path=suffix_path, suffix_last_part=suffix_last_part,
         )
 
         logging.info("Cleaning up temporary backup files...")

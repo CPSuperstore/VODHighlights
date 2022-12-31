@@ -22,6 +22,10 @@ SOUND_PAD = 0.25
 SEGMENT_LENGTH = "25"
 MIN_LENGTH_PERCENT = 0.25
 
+VIDEO_SUFFIX = ""
+LAST_PART_SAME_AS_REST = True
+LAST_PART_SUFFIX = ""
+
 DEFAULTS_FILE = "defaults.json"
 
 
@@ -29,6 +33,8 @@ def get_layout() -> list:
     label_width = 25
     slider_width = 35
     slider_height = 20
+
+    video_suffix_last_part_state = LAST_PART_SAME_AS_REST
 
     return [
         [sg.Text("Stream Highlight Creator", justification='center')],
@@ -51,6 +57,25 @@ def get_layout() -> list:
             sg.Slider(
                 (0, 100), default_value=MIN_LENGTH_PERCENT, resolution=1, orientation="h", key="min_length_percent",
                 size=(slider_width, slider_height)
+            )
+        ],
+        [
+            sg.Text("Video Suffix", size=(label_width, None), justification='right'),
+            sg.Input(key="video_suffix", default_text=VIDEO_SUFFIX),
+            sg.FileBrowse(button_text="Browse...", file_types=FILE_TYPES)
+        ],
+        [
+            sg.Text("Last Part Is Same As Rest", size=(label_width, None), justification='right'),
+            sg.Checkbox(key="video_suffix_same_as_rest", default=LAST_PART_SAME_AS_REST, text="", enable_events=True)
+        ],
+        [
+            sg.Text("Video Suffix Of Last Part", size=(label_width, None), justification='right'),
+            sg.Input(
+                key="video_suffix_last_part", default_text=LAST_PART_SUFFIX, disabled=video_suffix_last_part_state
+            ),
+            sg.FileBrowse(
+                button_text="Browse...", file_types=FILE_TYPES, key="video_suffix_last_part_button",
+                disabled=video_suffix_last_part_state
             )
         ],
         # [
@@ -99,6 +124,9 @@ def show_gui():
     global FILE_TYPE
     global SEGMENT_LENGTH
     global MIN_LENGTH_PERCENT
+    global VIDEO_SUFFIX
+    global LAST_PART_SAME_AS_REST
+    global LAST_PART_SUFFIX
 
     try:
         with open(DEFAULTS_FILE, 'r') as f:
@@ -115,6 +143,14 @@ def show_gui():
             SOUND_PAD = defaults.get("sound_pad", SOUND_PAD)
             MIN_LENGTH_PERCENT = defaults.get("min_length_percent", MIN_LENGTH_PERCENT) * 100
 
+            VIDEO_SUFFIX = defaults.get("video_suffix", VIDEO_SUFFIX)
+            LAST_PART_SAME_AS_REST = defaults.get("video_suffix_same_as_rest", LAST_PART_SAME_AS_REST)
+
+            if LAST_PART_SAME_AS_REST:
+                LAST_PART_SUFFIX = ""
+            else:
+                LAST_PART_SUFFIX = defaults.get("video_suffix_last_part", LAST_PART_SUFFIX)
+
     except (FileNotFoundError, json.JSONDecodeError):
         pass
 
@@ -128,6 +164,12 @@ def show_gui():
 
         if event == sg.WIN_CLOSED:
             sys.exit(0)
+
+        if event == "video_suffix_same_as_rest":
+            state = 'disabled' if values["video_suffix_same_as_rest"] else "normal"
+
+            window["video_suffix_last_part"].Widget.configure(state=state)
+            window["video_suffix_last_part_button"].Widget.configure(state=state)
 
         if event == "Start":
             if values["input_path"].replace(" ", "") == "":
@@ -153,7 +195,24 @@ def show_gui():
                 VOLUME_THRESHOLD = values["volume_threshold"]
                 SOUND_PAD = values["sound_pad"]
 
+                VIDEO_SUFFIX = values["video_suffix"]
+                LAST_PART_SAME_AS_REST = values["video_suffix_same_as_rest"]
+                LAST_PART_SUFFIX = values["video_suffix_last_part"]
+
                 window.close()
+
+                video_suffix = values["video_suffix"]
+                video_suffix_same_as_rest = values["video_suffix_same_as_rest"]
+                video_suffix_last_part = values["video_suffix_last_part"]
+
+                if video_suffix_same_as_rest:
+                    video_suffix_last_part = video_suffix
+
+                if video_suffix.strip() == "":
+                    video_suffix = None
+
+                if video_suffix_last_part.strip() == "":
+                    video_suffix_last_part = None
 
                 result = dict(
                     input_path=values["input_path"],
@@ -164,7 +223,10 @@ def show_gui():
                     volume_threshold=values["volume_threshold"] / 100,
                     sound_pad=values["sound_pad"],
                     segment_length=values["segment_length"],
-                    min_length_percent=values["min_length_percent"] / 100
+                    min_length_percent=values["min_length_percent"] / 100,
+                    video_suffix=video_suffix,
+                    video_suffix_same_as_rest=video_suffix_same_as_rest,
+                    video_suffix_last_part=video_suffix_last_part
                 )
 
                 with open(DEFAULTS_FILE, 'w') as f:

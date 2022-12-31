@@ -33,7 +33,9 @@ if len(sys.argv) == 1:
             volume_threshold=options["volume_threshold"],
             sound_pad=options["sound_pad"],
             section_length=float(options["segment_length"]) * 60,
-            min_length_percent=options["min_length_percent"]
+            min_length_percent=options["min_length_percent"],
+            suffix_path=options["video_suffix"],
+            suffix_last_part=options["video_suffix_last_part"]
         )
 
         ui.show_completed(options["output_path"], duration)
