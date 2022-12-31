@@ -89,7 +89,9 @@ def edit_video(
     # )
 
     if section_length is not None:
-        backup_editor.backup_edit(edited_video, backup_file, output_path)
+        backup_editor.backup_edit(
+            edited_video, backup_file, output_path
+        )
 
         logging.info("Cleaning up temporary backup files...")
         os.remove(backup_file)
